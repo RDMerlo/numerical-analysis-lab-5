@@ -1,7 +1,7 @@
 import math
-import numpy as np
-import copy
 from scipy import integrate
+from slae_gauss import *
+from numpay_print import *
 
 N = 3
 a = 0.6 - 3 / N
@@ -60,57 +60,15 @@ def GaussIntegral(i, j, f, a0, b0):
                 c[0] * f(points[0], i, j) + c[1] * f(points[1], i, j) + c[2] * f(points[2], i, j) + c[3] * f(points[3],
                                                                                                              i, j))
 
-
-# смена строк
-def swap_row(a, i, j):
-    temp = copy.copy(A[i])
-    A[i] = A[j]
-    A[j] = temp
-
-
-# прямой ход решения
-def decision_sle_direct_move(A):
-    for k in range(0, 4, 1):
-        # вернём индекс максимального элемента по модулю из столбца
-        index_max = np.argmax(abs(A[k:, k])) + k
-        # меняем строки местами
-        swap_row(A, k, index_max)
-
-        A[k] /= A[k][k]
-        for i in range(k + 1, n, 1):
-            A[i] = A[i] - A[k] * A[i][k]
-    return A
-
-
-# обратный ход, нахождение X
-def decision_sle_reverse_move(A, X, F):
-    X[n - 1] = F[n - 1]
-    for k in reversed(range(0, n - 1, 1)):
-        sum_row = 0
-        for i in reversed(range(0, n, 1)):
-            if (A[k][i] == 0.0):
-                continue
-            if (X[i] is not None):
-                sum_row += A[k][i] * X[i]
-        X[k] = F[k] - sum_row
-    return X
-
-
-def print_array(A):
-    for i in range(0, len(A), 1):
-        for j in range(0, len(A[i]), 1):
-            print("%.4f     " % A[i][j], end="")
-        print("")
-
-
-def print_vector(A):
-    for j in range(0, len(A), 1):
-        print("%.4f     " % A[j], end="")
-    print("")
-
-
 A = [[0] * VarInt for _ in range(VarInt)]
 ATrue = [[0] * VarInt for _ in range(VarInt)]
+
+print(ATrue)
+# for i in range(VarInt):
+#     for j in range(VarInt):
+#         ATrue[i][j] = integrate.quad(thetaA, a, b, args=(i+1, j+1))[0]
+# print(ATrue)
+# exit()
 B = [0] * VarInt
 for i in range(VarInt):
     for j in range(VarInt):
@@ -129,7 +87,8 @@ for i in range(VarInt):
             delta = (b0 - a0) / count
 
         A[i][j] = resultLast
-        ATrue[i][j] = integrate.quad(thetaA, a, b, args=(i, j))
+        # ATrue[i][j] = integrate.quad(thetaA, a, b, args=(i, j))
+        ATrue[i][j] = integrate.quad(thetaA, a, b, args=(i + 1, j + 1))[0]
 
     a0, b0 = a, b
     resultPrev = GaussIntegral(i + 1, 0, thetaB, a0, b0)
@@ -145,16 +104,15 @@ for i in range(VarInt):
         delta = (b0 - a0) / count
     B[i] = resultLast
 
-# print_array(A)
-# print_array(B)
 A = copy.copy(A)
 B = np.array(B)
 C = np.array([None, None, None, None])
 
 print_array(A)
 print("----")
-print(ATrue)
+print_array(ATrue)
 print("----")
+exit()
 
 print_vector(B)
 
