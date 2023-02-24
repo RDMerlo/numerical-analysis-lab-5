@@ -9,8 +9,8 @@ def swap_row(A, i, j):
 
 
 # прямой ход решения
-def decision_sle_direct_move(A, n = 4):
-    for k in range(0, 4, 1):
+def decision_sle_direct_move(A, n):
+    for k in range(0, n, 1):
         # вернём индекс максимального элемента по модулю из столбца
         index_max = np.argmax(abs(A[k:, k])) + k
         # меняем строки местами
@@ -23,7 +23,7 @@ def decision_sle_direct_move(A, n = 4):
 
 
 # обратный ход, нахождение X
-def decision_sle_reverse_move(A, X, F, n = 4):
+def decision_sle_reverse_move(A, X, F, n):
     X[n - 1] = F[n - 1]
     for k in reversed(range(0, n - 1, 1)):
         sum_row = 0
