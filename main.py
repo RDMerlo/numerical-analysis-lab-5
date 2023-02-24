@@ -108,7 +108,6 @@ print_array(A)
 print("----")
 print_array(ATrue)
 print("----")
-exit()
 
 print_vector(B)
 
