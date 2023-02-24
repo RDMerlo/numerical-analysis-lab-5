@@ -64,11 +64,7 @@ A = [[0] * VarInt for _ in range(VarInt)]
 ATrue = [[0] * VarInt for _ in range(VarInt)]
 
 print(ATrue)
-# for i in range(VarInt):
-#     for j in range(VarInt):
-#         ATrue[i][j] = integrate.quad(thetaA, a, b, args=(i+1, j+1))[0]
-# print(ATrue)
-# exit()
+
 B = [0] * VarInt
 for i in range(VarInt):
     for j in range(VarInt):
