@@ -1,7 +1,7 @@
 import math
 from scipy import integrate
 from slae_gauss import *
-from numpay_print import *
+from numpy_print import *
 
 N = 3
 a = 0.6 - 3 / N
