@@ -8,6 +8,6 @@ def print_array(A, message = ""):
 
 def print_vector(A, message = ""):
     print(message, end="")
-    for j in range(0, len(A), 1):
+    for j in range(len(A)):
         print("%.4f     " % A[j], end="")
     print("\n")

@@ -3,8 +3,8 @@ from scipy import integrate
 from slae_gauss import *
 from numpy_print import *
 
-N = 3
-VarInt = 4
+N = 14
+VarInt = 2
 
 a = 0.6 - 3 / N
 b = 2 - N / 13
@@ -23,17 +23,23 @@ def qx(x):
 def fx(x):
     return (N + x) / 3.5
 
+# def phi0(x):
+#     return mu1 + (mu2 - mu1) * math.sin(math.pi * (x - a) / (2 * (b - a)))
+# def derPhi0(x):
+#     return (mu2-mu1) * math.pi * 2 *(b - a) * math.cos((math.pi * (x - a) / (2 * (b - a))))
+# def phiK(x, k):
+#     return math.sin(math.pi * k * (x - a) / (b - a))
+# def derPhiK(x, k):
+#     return k * math.pi * (b - a) * math.cos(k * math.pi * (x - a) / (b - a))
+
 def phi0(x):
-    return mu1 + (mu2 - mu1) * math.sin(math.pi * (x - a) / (2 * (b - a)))
-
+    return mu1 + (mu2 - mu1) * math.cos(math.pi * (x - a) / (2 * (b - a)) + math.pi / 2)
 def derPhi0(x):
-    return (mu2 - mu1) * math.pi * 2 * (b - a) * math.cos((math.pi * (x - a) / (2 * (b - a))))
-
+    return ( (mu1 - mu2) * math.pi * math.sin((math.pi * (b - x) / (2 * (a - b)))) ) / (2 * (a - b))
 def phiK(x, k):
-    return math.sin(math.pi * k * (x - a) / (b - a))
-
+    return math.cos(math.pi * k * (x - a) / (b - a) + math.pi / 2)
 def derPhiK(x, k):
-    return k * math.pi * (b - a) * math.cos(k * math.pi * (x - a) / (b - a))
+    return -math.sin(k * math.pi * (x - a) / (b - a))
 
 def thetaA(x, i, j):
     return kx(x) * derPhiK(x, i) * derPhiK(x, j) + qx(x) * phiK(x, i) * phiK(x, j)
@@ -75,15 +81,15 @@ def compulation_Bj(i = 1):
     return resultLast
 
 def GaussIntegral(i, j, f, a0, b0):
-    # поделить на части и для каждой пересчитать
-    c = [0.34785484, 0.65214516, 0.65214516, 0.34785484]
-    t = [-0.86113631, -0.33998104, 0.33998104, 0.86113631]
+    c = [1, 1]
+    t = [-0.57735027, 0.57735027]
+    # c = [0.34785484, 0.65214516, 0.65214516, 0.34785484]
+    # t = [-0.86113631, -0.33998104, 0.33998104, 0.86113631]
     points = [(b0 + a0) / 2 + (b0 - a0) / 2 * t[k] for k in range(VarInt)]
     return (b0 - a0) / 2 * sum([c[k] * f(points[k], i, j) for k in range(VarInt)])
 
 def ChebyshevIntegral(i, j, f, a0, b0):
-    # поделить на части и для каждой пересчитать
-    t = [-0.86113631, -0.33998104, 0.33998104, 0.86113631]
+    t = [-0.577350, 0.577350]
     points = [(b0 + a0) / 2 + (b0 - a0) / 2 * t[k] for k in range(VarInt)]
     return (b0 - a0) / VarInt * sum([f(points[k], i, j) for k in range(VarInt)])
 
@@ -105,7 +111,7 @@ print_array(ATrue, "Библиотека Scipy\nA:")
 print_vector(B, "B: ")
 
 # решаем СЛАУ
-C = np.array([None, None, None, None])
+C = [None] * VarInt
 A = np.column_stack((A, B)) #расширенная матрица
 A = decision_sle_direct_move(A, VarInt)
 
