@@ -127,5 +127,5 @@ for i in range(6):
     unx = phi0(durX)
     for j in range(VarInt):
         unx += C[j] * phiK(durX, j + 1)
-    print(f"u{i + 1}(x) = {unx}")
+    print(f"u{i + 1}(x) = {unx:.4f}")
     durX += dl
