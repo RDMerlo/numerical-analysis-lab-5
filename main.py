@@ -4,7 +4,7 @@ from slae_gauss import *
 from numpy_print import *
 
 N = 14
-VarInt = 2
+n = 4
 
 a = 0.6 - 3 / N
 b = 2 - N / 13
@@ -24,22 +24,40 @@ def fx(x):
     return (N + x) / 3.5
 
 # def phi0(x):
-#     return mu1 + (mu2 - mu1) * math.sin(math.pi * (x - a) / (2 * (b - a)))
+#     return mu1 + (mu2 - mu1) * math.cos(math.pi * (x - a) / (2 * (b - a)) + math.pi / 2)
 # def derPhi0(x):
-#     return (mu2-mu1) * math.pi * 2 *(b - a) * math.cos((math.pi * (x - a) / (2 * (b - a))))
+#     return ( (mu1 - mu2) * math.pi * math.sin((math.pi * (b - x) / (2 * (a - b)))) ) / (2 * (a - b))
 # def phiK(x, k):
-#     return math.sin(math.pi * k * (x - a) / (b - a))
+#     return math.cos(math.pi * k * (x - a) / (b - a) + math.pi / 2)
 # def derPhiK(x, k):
 #     return k * math.pi * (b - a) * math.cos(k * math.pi * (x - a) / (b - a))
 
+# def phi0(x):
+#     return mu1 + (mu2 - mu1) * math.sin(math.pi * (x - a) / (2 * (b - a)))
+# def derPhi0(x):
+#     return (mu2-mu1) * math.pi / (2 * (b - a)) * math.cos((math.pi * (x - a) / (2 * (b - a))))
+# def phiK(x, k):
+#     return math.sin(math.pi * k * (x - a) / (b - a))
+# def derPhiK(x, k):
+#     return k * math.pi / (b - a) * math.cos(k * math.pi * (x - a) / (b - a))
+
+# def phi0(x):
+#     return mu1 + (mu2 - mu1) * math.cos(math.pi/2 + math.pi * (x - a) / (2 * (b - a)))
+# def derPhi0(x):
+#     return (mu2-mu1) * math.pi / (2 * (b - a)) * math.sin(math.pi/2 + (math.pi * (x - a) / (2 * (b - a))))
+# def phiK(x, k):
+#     return math.cos(math.pi/2 + math.pi * k * (x - a) / (b - a))
+# def derPhiK(x, k):
+#     return k * math.pi / (b - a) * math.sin(math.pi/2 + k * math.pi * (x - a) / (b - a))
+
 def phi0(x):
-    return mu1 + (mu2 - mu1) * math.cos(math.pi * (x - a) / (2 * (b - a)) + math.pi / 2)
+    return mu1 + (mu2 - mu1) * math.cos(math.pi/2 + math.pi * (x - a) / (2 * (b - a)))
 def derPhi0(x):
-    return ( (mu1 - mu2) * math.pi * math.sin((math.pi * (b - x) / (2 * (a - b)))) ) / (2 * (a - b))
+    return (mu2-mu1) * math.pi / (2 * (b - a)) * math.sin((math.pi * (x - a) / (2 * (b - a))))
 def phiK(x, k):
-    return math.cos(math.pi * k * (x - a) / (b - a) + math.pi / 2)
+    return math.cos(math.pi/2 + math.pi * k * (x - a) / (b - a))
 def derPhiK(x, k):
-    return -math.sin(k * math.pi * (x - a) / (b - a))
+    return k * math.pi / (b - a) * math.sin(k * math.pi * (x - a) / (b - a))
 
 def thetaA(x, i, j):
     return kx(x) * derPhiK(x, i) * derPhiK(x, j) + qx(x) * phiK(x, i) * phiK(x, j)
@@ -81,51 +99,58 @@ def compulation_Bj(i = 1):
     return resultLast
 
 def GaussIntegral(i, j, f, a0, b0):
-    c = [1, 1]
-    t = [-0.57735027, 0.57735027]
-    # c = [0.34785484, 0.65214516, 0.65214516, 0.34785484]
-    # t = [-0.86113631, -0.33998104, 0.33998104, 0.86113631]
-    points = [(b0 + a0) / 2 + (b0 - a0) / 2 * t[k] for k in range(VarInt)]
-    return (b0 - a0) / 2 * sum([c[k] * f(points[k], i, j) for k in range(VarInt)])
+    # c = [1, 1]
+    # t = [-0.57735027, 0.57735027]
+    c = [0.34785484, 0.65214516, 0.65214516, 0.34785484]
+    t = [-0.86113631, -0.33998104, 0.33998104, 0.86113631]
+    points = [(b0 + a0) / 2 + (b0 - a0) / 2 * t[k] for k in range(n)]
+    return (b0 - a0) / 2 * sum([c[k] * f(points[k], i, j) for k in range(n)])
 
 def ChebyshevIntegral(i, j, f, a0, b0):
     t = [-0.577350, 0.577350]
-    points = [(b0 + a0) / 2 + (b0 - a0) / 2 * t[k] for k in range(VarInt)]
-    return (b0 - a0) / VarInt * sum([f(points[k], i, j) for k in range(VarInt)])
+    points = [(b0 + a0) / 2 + (b0 - a0) / 2 * t[k] for k in range(n)]
+    return (b0 - a0) / n * sum([f(points[k], i, j) for k in range(n)])
 
-A = [[0] * VarInt for _ in range(VarInt)]
-ATrue = [[0] * VarInt for _ in range(VarInt)]
+A = [[0] * n for _ in range(n)]
+ATrue = [[0] * n for _ in range(n)]
 
-B = [0] * VarInt
+B = [0] * n
+BTrue = [0] * n
 
-for i in range(VarInt):
-    for j in range(VarInt):
+for i in range(n):
+    for j in range(n):
         A[i][j] = compulation_Aij(i, j)
         ATrue[i][j] = integrate.quad(thetaA, a, b, args=(i + 1, j + 1))[0]
     B[i] = compulation_Bj(i)
+    BTrue[i] = integrate.quad(thetaB, a, b, args=(i + 1,))[0]
+
+chislo_obuslovnosti = np.linalg.cond(A)
+print("Число обусловности: ", chislo_obuslovnosti, end = "\n\n")
 
 print_array(A, "Метод Гауса\nA:")
 print("---" * 20)
 print_array(ATrue, "Библиотека Scipy\nA:")
-
-print_vector(B, "B: ")
+print("---" * 20)
+print_vector(B, "Метод Гауса\nB:")
+print("---" * 20)
+print_vector(B, "Библиотека Scipy\nB:")
 
 # решаем СЛАУ
-C = [None] * VarInt
+C = [None] * n
 A = np.column_stack((A, B)) #расширенная матрица
-A = decision_sle_direct_move(A, VarInt)
+A = decision_sle_direct_move(A, n)
 
-B = A[:, VarInt]
-A = A[:, :VarInt]
+B = A[:, n]
+A = A[:, :n]
 # обратное ход
-C = decision_sle_reverse_move(A, C, B, VarInt)
+C = decision_sle_reverse_move(A, C, B, n)
 print_vector(C, "C: ")
 
 # выводим значения в точках
 durX = a
 for i in range(6):
     unx = phi0(durX)
-    for j in range(VarInt):
+    for j in range(n):
         unx += C[j] * phiK(durX, j + 1)
     print(f"u{i + 1}(x) = {unx:.4f}")
     durX += dl
