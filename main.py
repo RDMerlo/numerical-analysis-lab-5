@@ -92,8 +92,8 @@ def GaussIntegral(i, j, f, a0, b0):
     "заменить своими значениями относительно n=4 или n=3"
     c = [0.34785484, 0.65214516, 0.65214516, 0.34785484] # из книжки
     t = [-0.86113631, -0.33998104, 0.33998104, 0.86113631] # из книжки
-    points = [(b0 + a0) / 2 + (b0 - a0) / 2 * t[k] for k in range(n)]
-    return (b0 - a0) / 2 * sum([c[k] * f(points[k], i, j) for k in range(n)])
+    x_points = [(b0 + a0) / 2 + (b0 - a0) / 2 * t[k] for k in range(n)]
+    return (b0 - a0) / 2 * sum([c[k] * f(x_points[k], i, j) for k in range(n)])
 
 def ChebyshevIntegral(i, j, f, a0, b0):
     "Интегрирование методом Чебышева"
