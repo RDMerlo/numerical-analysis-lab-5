@@ -99,8 +99,8 @@ def ChebyshevIntegral(i, j, f, a0, b0):
     "Интегрирование методом Чебышева"
     "заменить своими значениями относительно n=4 или n=3"
     t = [-0.577350, 0.577350] # из книжки
-    points = [(b0 + a0) / 2 + (b0 - a0) / 2 * t[k] for k in range(n)]
-    return (b0 - a0) / n * sum([f(points[k], i, j) for k in range(n)])
+    x_points = [(b0 + a0) / 2 + (b0 - a0) / 2 * t[k] for k in range(n)]
+    return (b0 - a0) / n * sum([f(x_points[k], i, j) for k in range(n)])
 
 A = [[0] * n for _ in range(n)]
 ATrue = [[0] * n for _ in range(n)]
