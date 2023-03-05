@@ -23,7 +23,10 @@ def decision_sle_direct_move(A, n):
 
 
 # обратный ход, нахождение X
-def decision_sle_reverse_move(A, X, F, n):
+def decision_sle_reverse_move(A, n):
+    X = [None] * n
+    F = A[:, n]
+    A = A[:, :n]
     X[n - 1] = F[n - 1]
     for k in reversed(range(0, n - 1, 1)):
         sum_row = 0

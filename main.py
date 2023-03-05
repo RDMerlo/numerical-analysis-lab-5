@@ -23,24 +23,7 @@ def qx(x):
 def fx(x):
     return (N + x) / 3.5
 
-# def phi0(x):
-#     return mu1 + (mu2 - mu1) * math.cos(math.pi * (x - a) / (2 * (b - a)) + math.pi / 2)
-# def derPhi0(x):
-#     return ( (mu1 - mu2) * math.pi * math.sin((math.pi * (b - x) / (2 * (a - b)))) ) / (2 * (a - b))
-# def phiK(x, k):
-#     return math.cos(math.pi * k * (x - a) / (b - a) + math.pi / 2)
-# def derPhiK(x, k):
-#     return k * math.pi * (b - a) * math.cos(k * math.pi * (x - a) / (b - a))
-
-# def phi0(x):
-#     return mu1 + (mu2 - mu1) * math.sin(math.pi * (x - a) / (2 * (b - a)))
-# def derPhi0(x):
-#     return (mu2-mu1) * math.pi / (2 * (b - a)) * math.cos((math.pi * (x - a) / (2 * (b - a))))
-# def phiK(x, k):
-#     return math.sin(math.pi * k * (x - a) / (b - a))
-# def derPhiK(x, k):
-#     return k * math.pi / (b - a) * math.cos(k * math.pi * (x - a) / (b - a))
-
+# другой вариант phi
 # def phi0(x):
 #     return mu1 + (mu2 - mu1) * math.cos(math.pi/2 + math.pi * (x - a) / (2 * (b - a)))
 # def derPhi0(x):
@@ -59,14 +42,19 @@ def phiK(x, k):
 def derPhiK(x, k):
     return k * math.pi / (b - a) * math.sin(k * math.pi * (x - a) / (b - a))
 
+############################################################################
+
 def thetaA(x, i, j):
+    "Элемент матрицы А"
     return kx(x) * derPhiK(x, i) * derPhiK(x, j) + qx(x) * phiK(x, i) * phiK(x, j)
 
-# посчитать с помощью интеграла встроенного
 def thetaB(x, i, j=0):
+    "Элемент вектора B"
     return fx(x) * phiK(x, i) - qx(x) * phi0(x) * phiK(x, i) - kx(x) * derPhiK(x, i) * derPhi0(x)
 
+
 def compulation_Aij(i = 1, j = 1):
+    "Вычисление элементов матрицы А"
     a_temp, b_temp = a, b
     resultPrev = GaussIntegral(i + 1, j + 1, thetaA, a_temp, b_temp) #основное вычисление
     #делим на два отрезка и суммируем
@@ -83,6 +71,7 @@ def compulation_Aij(i = 1, j = 1):
     return resultLast
 
 def compulation_Bj(i = 1):
+    "Вычисление элементов вектора В"
     a_temp, b_temp = a, b
     resultPrev = GaussIntegral(i + 1, 0, thetaB, a_temp, b_temp) #основное вычисление
     # делим на два отрезка и суммируем
@@ -99,15 +88,17 @@ def compulation_Bj(i = 1):
     return resultLast
 
 def GaussIntegral(i, j, f, a0, b0):
-    # c = [1, 1]
-    # t = [-0.57735027, 0.57735027]
-    c = [0.34785484, 0.65214516, 0.65214516, 0.34785484]
-    t = [-0.86113631, -0.33998104, 0.33998104, 0.86113631]
+    "Интегрирование методом Гаусса"
+    "заменить своими значениями относительно n=4 или n=3"
+    c = [0.34785484, 0.65214516, 0.65214516, 0.34785484] # из книжки
+    t = [-0.86113631, -0.33998104, 0.33998104, 0.86113631] # из книжки
     points = [(b0 + a0) / 2 + (b0 - a0) / 2 * t[k] for k in range(n)]
     return (b0 - a0) / 2 * sum([c[k] * f(points[k], i, j) for k in range(n)])
 
 def ChebyshevIntegral(i, j, f, a0, b0):
-    t = [-0.577350, 0.577350]
+    "Интегрирование методом Чебышева"
+    "заменить своими значениями относительно n=4 или n=3"
+    t = [-0.577350, 0.577350] # из книжки
     points = [(b0 + a0) / 2 + (b0 - a0) / 2 * t[k] for k in range(n)]
     return (b0 - a0) / n * sum([f(points[k], i, j) for k in range(n)])
 
@@ -117,6 +108,7 @@ ATrue = [[0] * n for _ in range(n)]
 B = [0] * n
 BTrue = [0] * n
 
+"Собираем матрицу А и В"
 for i in range(n):
     for j in range(n):
         A[i][j] = compulation_Aij(i, j)
@@ -136,14 +128,12 @@ print("---" * 20)
 print_vector(B, "Библиотека Scipy\nB:")
 
 # решаем СЛАУ
-C = [None] * n
 A = np.column_stack((A, B)) #расширенная матрица
+# прямой ход
 A = decision_sle_direct_move(A, n)
+# обратный ход
+C = decision_sle_reverse_move(A, n)
 
-B = A[:, n]
-A = A[:, :n]
-# обратное ход
-C = decision_sle_reverse_move(A, C, B, n)
 print_vector(C, "C: ")
 
 # выводим значения в точках
