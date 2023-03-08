@@ -6,7 +6,7 @@ from numpy_print import *
 N = 14
 n = 4
 
-a = 0.6 - 3 / N
+a = 0.6 - N / 13
 b = 2 - N / 13
 dl = (b - a) / 5
 mu1 = 15 / (N + 3)
@@ -125,7 +125,7 @@ print_array(ATrue, "Библиотека Scipy\nA:")
 print("---" * 20)
 print_vector(B, "Метод Гауса\nB:")
 print("---" * 20)
-print_vector(B, "Библиотека Scipy\nB:")
+print_vector(BTrue, "Библиотека Scipy\nB:")
 
 # решаем СЛАУ
 A = np.column_stack((A, B)) #расширенная матрица
